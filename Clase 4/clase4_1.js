@@ -8,6 +8,14 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var Colores;
+(function (Colores) {
+    Colores[Colores["blue"] = 0] = "blue";
+    Colores[Colores["yellow"] = 1] = "yellow";
+    Colores[Colores["red"] = 2] = "red";
+    Colores[Colores["green"] = 3] = "green";
+    Colores[Colores["orange"] = 4] = "orange";
+})(Colores || (Colores = {}));
 var Figura = /** @class */ (function () {
     function Figura(color, contexto, x, y) {
         this._x = (x == undefined) ? Math.random() * 300 : x;
@@ -62,6 +70,7 @@ var Circulo = /** @class */ (function (_super) {
         this.cxt.arc(this.x, this.y, this._radio, 0, Math.PI * 2);
         this.cxt.fillStyle = this._color;
         this.cxt.fill();
+        this.cxt.stroke();
         this.cxt.closePath();
     };
     return Circulo;

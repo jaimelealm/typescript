@@ -1,50 +1,52 @@
-enum Colores{
-    blue,
-    yellow,
-    red,
-    green,
-    orange,
+
+enum Colores {
+    blue    = "blue",
+    yellow  = "white",
+    red     = "red",        
+    green   = "green",
+    orange  = "orange"
 }
 
-abstract class Figura{
+ abstract class Figura{
     private _x:number
     private _y:number
-    protected _color:string
+    static _color:Colores
     protected cxt:CanvasRenderingContext2D
 
-    constructor(color:string,
+    public abstract dibujar();
+
+    constructor(
             contexto:CanvasRenderingContext2D,
             x?:number,y?:number){
         this._x = (x==undefined) ? Math.random()*300 : x;
         this._y = (y==undefined) ? Math.random()*300 : y;
-        this._color = color;
         this.cxt = contexto
     }
-    public get x(){
+    public get x():number{
         return this._x;
     }
     public set x(x:number){
         this._x = x;
     }
-    public get y(){
+    public get y():number{
         return this._y;
     }
     public set y(y:number){
         this._y = y;
     }
 }
-class Circulo extends Figura{
-    private _radio:number;
-    constructor( color:string,
-        contexto:CanvasRenderingContext2D,
-        radio?:number,x?:number,y?:number){
-        super(color,contexto,x,y);
-        if (radio==undefined)
-            this._radio = Math.random()*100;
-        else
-            this._radio = radio;    
-    }
 
+class Circulo extends Figura{
+    private _radio:number
+
+    constructor(context:CanvasRenderingContext2D,
+                radio?:number,x?:number,y?:number){
+        super(context,x,y)
+        if (radio==undefined)
+            this._radio=Math.random()*100;
+        else
+            this._radio = radio
+    }
     public get radio():number{
         return this._radio;
     }
@@ -54,13 +56,13 @@ class Circulo extends Figura{
     public dibujar(){
         this.cxt.beginPath();
         this.cxt.arc(this.x,this.y,this._radio,0,Math.PI*2);
-        this.cxt.fillStyle=this._color;
+        // color es un atributo estatico
+        this.cxt.fillStyle=Figura._color;
         this.cxt.fill();
-        this.cxt.stroke();
         this.cxt.closePath();
+        this.cxt.stroke();
     }
 }
-
 class Triangulo extends Figura{
     private h:number
     public dibujar(){
@@ -69,15 +71,14 @@ class Triangulo extends Figura{
         this.cxt.lineTo(this.x-this.h/2,this.y+this.h)
         this.cxt.lineTo(this.x+this.h/2,this.y+this.h)
         this.cxt.closePath();
-        this.cxt.fillStyle=this._color;
+        this.cxt.fillStyle=Figura._color;
         this.cxt.fill();
         this.cxt.stroke();
     }
     constructor(
-            color:string,
             contexto:CanvasRenderingContext2D,
             h?:number){
-        super(color,contexto);
+        super(contexto);
         this.h=(h==undefined)?Math.random()*300:h;
     }
 }
@@ -86,14 +87,33 @@ class Triangulito extends Triangulo{
         this.cxt.fillText("Triangulito",this.x,this.y);
         super.dibujar();
     }
-    constructor(color:string,context:CanvasRenderingContext2D){
-        super(color,context)
+    constructor(context:CanvasRenderingContext2D){
+        super(context)
     }
 }
 
 var canvas:any=document.getElementById("canvas");
-var cx=canvas.getContext("2d");
+var ctx=canvas.getContext("2d");
 
-new Triangulo("green",cx).dibujar();
-new Triangulito("yellow",cx).dibujar();
-new Circulo("yellow",cx).dibujar();
+Figura._color=Colores.yellow
+for (let i=1;i<=10;i++){
+    let c:Circulo=new Circulo(ctx);
+    //c.setColor(Colores.yellow)
+    c.dibujar();
+}
+function getColor(i:number):Colores{
+    switch (i){
+        case 0: return Colores.blue;
+        case 1: return Colores.green;
+        case 2: return Colores.orange;
+        case 3: return Colores.red;
+        case 4: return Colores.yellow;
+    }
+}
+for (let i=0;i<5;i++){
+    Figura._color=getColor(i);
+    new Triangulo(ctx).dibujar();
+}
+
+new Triangulito(ctx).dibujar();
+
