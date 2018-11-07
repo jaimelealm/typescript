@@ -1,12 +1,11 @@
 
-class Figura{
+abstract class Figura{
     private _x:number
     private _y:number
     protected _color:string
     protected cxt:CanvasRenderingContext2D
 
-    constructor(
-            color:string,
+    constructor(color:string,
             contexto:CanvasRenderingContext2D,
             x?:number,y?:number){
         this._x = (x==undefined) ? Math.random()*300 : x;
@@ -25,6 +24,32 @@ class Figura{
     }
     public set y(y:number){
         this._y = y;
+    }
+}
+class Circulo extends Figura{
+    private _radio:number;
+    constructor( color:string,
+        contexto:CanvasRenderingContext2D,
+        radio?:number,x?:number,y?:number){
+        super(color,contexto,x,y);
+        if (radio==undefined)
+            this._radio = Math.random()*100;
+        else
+            this._radio = radio;    
+    }
+
+    public get radio():number{
+        return this._radio;
+    }
+    public set radio(radio:number){
+        this._radio = radio;
+    }
+    public dibujar(){
+        this.cxt.beginPath();
+        this.cxt.arc(this.x,this.y,this._radio,0,Math.PI*2);
+        this.cxt.fillStyle=this._color;
+        this.cxt.fill();
+        this.cxt.closePath();
     }
 }
 
@@ -59,7 +84,8 @@ class Triangulito extends Triangulo{
 }
 
 var canvas:any=document.getElementById("canvas");
-var ctx=canvas.getContext("2d");
+var cx=canvas.getContext("2d");
 
-new Triangulo("green",ctx).dibujar();
-new Triangulito("yellow",ctx).dibujar();
+new Triangulo("green",cx).dibujar();
+new Triangulito("yellow",cx).dibujar();
+new Circulo("yellow",cx).dibujar();
